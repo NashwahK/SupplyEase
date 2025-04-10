@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import GreetingCard from "../components/GreetingCard";
@@ -6,6 +5,7 @@ import QuickCard from "../components/QuickCards";
 import BarChart from "../components/BarChart";
 import PieChart from "../components/PieChart";
 import Scale from "../components/Scale";
+import DashboardBg from "../../public/assets/DashboardBg.png"
 import { supabase } from "../supabaseClient";
 
 const Dashboard = () => {
@@ -38,12 +38,6 @@ const Dashboard = () => {
       isPositive: true,
     },
     {
-      title: "Return Rate",
-      value: "0.7%",
-      percentage: "3%",
-      isPositive: false,
-    },
-    {
       title: "Days of Supply",
       value: "36",
       percentage: "2%",
@@ -52,23 +46,24 @@ const Dashboard = () => {
   ];
 
   const stockLevelData = [
-    { name: "Manufacturing", value1: 800, value2: 0 },
-    { name: "Production", value1: 0, value2: 600 },
-    { name: "Design", value1: 900, value2: 0 },
-    { name: "Stitching", value1: 0, value2: 1100 },
-    { name: "Packaging", value1: 300, value2: 0 },
-    { name: "Shipping", value1: 0, value2: 400 },
+    { name: "Manufacturing", value: 800, fill:'#4ACBAE' },
+    { name: "Production", value: 100, fill: '#9E5DC5' },
+    { name: "Design", value: 900, fill: '#5DA5D1' },
+    { name: "Stitching", value: 800, fill:'#4ACBAE' },
+    { name: "Packaging", value: 300, fill: '#9E5DC5' },
+    { name: "Shipping", value: 1000, fill: '#5DA5D1' },
   ];
 
   const pieChartData = [
-    { name: "Pure Cotton", value: 50, color: "#3EF3E3" },
-    { name: "Polyester", value: 20, color: "#BB7CF7" },
-    { name: "Silk", value: 20, color: "#7C81F7" },
+    { name: "Pure Cotton", value: 50, color: "#4ACBAE" },
+    { name: "Polyester", value: 20, color: "#9E5DC5" },
+    { name: "Silk", value: 20, color: "#5DA5D1" },
     { name: "Wool", value: 10, color: "#6BF77C" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1B0036] to-[#000] text-white">
+    <div className="min-h-screen text-white" 
+    style={{ backgroundImage: `url(${DashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <Navbar />
       <GreetingCard />
 
@@ -87,7 +82,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      <div className="px-6 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="px-6 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left Column - QuickCards */}
         <div className="flex flex-col gap-4">
           {statData.map((stat, index) => (

@@ -1,6 +1,8 @@
 import { supabase } from "../supabaseClient";
 import { useState } from "react";
+import { useSnackbar } from "../context/SnackbarContext";
 import { useNavigate } from "react-router-dom";
+
 import { FaEye, FaEyeSlash, FaThumbsUp, FaThumbsDown
  } from "react-icons/fa";
 
@@ -18,8 +20,8 @@ const SignUpCard = ({ toggleView }) => {
     specialChar: false,
   });
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
-  // Handle password validation
   const validatePassword = (password) => {
     setPasswordValid({
       length: password.length >= 8,
@@ -31,29 +33,28 @@ const SignUpCard = ({ toggleView }) => {
   const handleSignup = async (e) => {
     e.preventDefault();  
     setError(""); 
-    const { user, error: signupError } = await supabase.auth.signUp({
+  
+    const { error: signupError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: "http://localhost:5173/login" 
+      }
     });
+  
     if (signupError) {
       setError(signupError.message);
       return;
     }
   
-    const { error: userInfoError } = await supabase.from("Users").insert([
-      {
-        user_id: user.id,  // user.id is from Supabase Auth (Check!!)
-        user_firstname: firstName,
-        user_lastname: lastName,
-        user_email: email,
-      },
-    ]);
-    if (userInfoError) {
-      setError(userInfoError.message);
-      return;
-    }
+    // The email confirmation bit (might need to make this fancier)
+    showSnackbar("Almost there! Please check your email and confirm your account before logging in.", "success");
+    localStorage.setItem("signupFirstName", firstName);
+    localStorage.setItem("signupLastName", lastName);
+
     navigate("/");
   };
+  
   
 
   return (
