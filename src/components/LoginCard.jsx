@@ -13,16 +13,40 @@ const LoginCard = ({ toggleView }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    const { user, error: signInError } = await supabase.auth.signInWithPassword({
+  
+    const { data: loginData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+  
     if (signInError) {
       setError("Authentication failed. Please check your email and password.");
       return;
     }
-    navigate("/dashboard");
+  
+    const userId = loginData.user.id;
+  
+    // Check if user already has a profile in the public Users table
+    const { data: existingProfile, error: profileError } = await supabase
+      .from("Users")
+      .select("user_id")
+      .eq("user_id", userId)
+      .single();
+  
+    if (profileError && profileError.code !== "PGRST116") {
+      // PGRST116 = no rows found — that’s fine
+      setError("Failed to fetch profile.");
+      return;
+    }
+  
+    // Route based on profile existence
+    if (existingProfile) {
+      navigate("/dashboard");
+    } else {
+      navigate("/profile-setup");
+    }
   };
+  
   
 
   return (
