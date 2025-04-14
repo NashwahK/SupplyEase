@@ -50,7 +50,7 @@ const Navbar = () => {
             <Link to="/dashboard" className={getLinkClass('/dashboard')}>
               Dashboard
             </Link>
-            <Link to="/track-product" className={getLinkClass('/track-product')}>
+            <Link to="/track-orders" className={getLinkClass('/track-orders')}>
               Track Your Orders
             </Link>
             <Link to="/products" className={getLinkClass('/products')}>
