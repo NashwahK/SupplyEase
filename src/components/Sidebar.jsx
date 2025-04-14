@@ -23,7 +23,7 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarRef }) => {
           <Link to="/dashboard" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
             Dashboard
           </Link>
-          <Link to="/track-product" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
+          <Link to="/track-orders" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
             Track Your Orders
           </Link>
           <Link to="/products" className="hover:text-[#A584EC]" onClick={toggleSidebar}>

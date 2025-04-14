@@ -2,7 +2,7 @@ import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 const QuickCard = ({ title, value, percentage, isPositive }) => {
   const arrowIcon = isPositive ? <ArrowUpRight className="text-[#45F996]" /> : <ArrowDownRight className="text-[F94545]" />;
-  const percentColor = isPositive ? "text-[#45F996]" : "text-[]#F94545]";
+  const percentColor = isPositive ? "text-[#45F996]" : "text-[#F94545]";
 
   return (
     <div className="bg-[#2E2047] p-4 rounded-xl w-72 h-48 text-white shadow-md space-y-1">
