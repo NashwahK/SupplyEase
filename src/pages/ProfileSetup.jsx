@@ -9,7 +9,6 @@ const ProfileSetup = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Only run once, on component mount
   useEffect(() => {
     setFirstName(localStorage.getItem("firstName") || "");
     setLastName(localStorage.getItem("lastName") || "");
@@ -43,8 +42,6 @@ const ProfileSetup = () => {
       setError("Failed to save profile: " + insertError.message);
       return;
     }
-
-    // Optional cleanup
     localStorage.removeItem("firstName");
     localStorage.removeItem("lastName");
 

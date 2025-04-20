@@ -1,8 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
 const Sidebar = ({ isOpen, toggleSidebar, sidebarRef }) => {
+
+  const navigate = useNavigate();
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) {

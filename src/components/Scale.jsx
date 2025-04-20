@@ -25,11 +25,10 @@ const Scale = ({ title }) => {
     fetchFulfillmentRate();
   }, []);
 
-  // Clamp percentage between 0 and 100
   const clamped = Math.min(Math.max(percentage, 0), 100);
   const radius = 60;
   const circumference = Math.PI * radius;
-  const progress = (clamped / 100) * circumference;
+  const progress = (clamped / 100) * circumference; // Math 101 yall
 
   return (
     <div className="bg-[#2E2047] p-4 rounded-xl text-white shadow-md w-full">
@@ -50,7 +49,7 @@ const Scale = ({ title }) => {
             stroke="#4ACBAE"
             strokeWidth="35"
             strokeDasharray={circumference}
-            strokeDashoffset={circumference - progress}
+            strokeDashoffset={circumference - progress} // It's this thing. 
             strokeLinecap="round"
           />
         </svg>

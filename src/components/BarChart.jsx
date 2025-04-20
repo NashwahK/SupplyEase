@@ -15,13 +15,15 @@ import { supabase } from "../supabaseClient";
 const BarChartCard = ({ title }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [chartData, setChartData] = useState([]);
+  
+  const year = selectedDate.getFullYear();
 
   useEffect(() => {
     const fetchChartData = async () => {
       const month = selectedDate.getMonth() + 1;
-
       const { data, error } = await supabase.rpc("get_department_items_by_month", {
         month_input: month,
+        year_input: year
       });
 
       if (error) {
@@ -41,7 +43,7 @@ const BarChartCard = ({ title }) => {
     };
 
     fetchChartData();
-  }, [selectedDate]);
+  }, [selectedDate, year]);
 
   return (
     <div className="bg-[#2E2047] p-4 rounded-xl text-white shadow-md w-full">
@@ -56,7 +58,7 @@ const BarChartCard = ({ title }) => {
         />
       </div>
 
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={450}>
         <BarChart data={chartData} barCategoryGap="10%" barSize={30}>
           <CartesianGrid stroke="#9C9C9C" vertical={false} />
           <XAxis

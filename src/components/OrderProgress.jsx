@@ -1,12 +1,11 @@
-import { useState } from "react";
 import DepartmentNode from "./DepartmentNode";
 
 const OrderProgress = ({ deliverable }) => {
   const departmentLabels = {
-    1: "Manufacturing 1",
-    2: "Manufacturing 2",
-    3: "Raw Material 1",
-    4: "Raw Material 2",
+    1: "Raw Material 1",
+    2: "Raw Material 2",
+    3: "Manufacturing 1",
+    4: "Manufacturing 2",
     5: "Production",
     6: "Design",
     7: "Stitching",

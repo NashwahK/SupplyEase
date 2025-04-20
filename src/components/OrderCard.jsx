@@ -7,9 +7,10 @@ const OrderCard = ({ order }) => {
   const [expanded, setExpanded] = useState(false);
 
   const statusColors = {
-    "In-Progress": "#F9C645",
+    "In Progress": "#F9C645",
     Completed: "#45F996",
     Late: "#F94545",
+    Shipped: "#45F996"
   };
 
   return (
