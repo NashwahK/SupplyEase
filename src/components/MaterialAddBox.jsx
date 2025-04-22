@@ -76,7 +76,7 @@ const MaterialAddBox = () => {
         storage_location: storage,
         unit_price: priceValue,
         measuring_unit: measuringUnit,
-        sample_picture: imageUrl || null,
+        image: imageUrl || null,
       });
   
       if (insertError) throw insertError;

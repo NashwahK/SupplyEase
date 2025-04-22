@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthProvider";
 
 const GreetingCard = () => {
   const [temperature, setTemperature] = useState(null);
-  const [userInfo, setUserInfo] = useState({firstName:"", lastName:""});
+  const [userInfo, setUserInfo] = useState({name:""});
   const today = new Date();
   const formattedDate = today.toLocaleString("en-US", { day: "numeric", month: "long", year: "numeric" });
   const formattedDay = today.toLocaleString("en-US", { weekday: "long" });
@@ -15,15 +15,15 @@ const GreetingCard = () => {
     const fetchUserInfo = async () => {
       if (!user?.email) return;
       const { data, error } = await supabase
-      .from("Users") 
+      .from("supply_chain_manager") 
       .select("*")
-      .eq("user_email", user.email) 
+      .eq("email_address", user.email) 
       .single();
       if (error) {
         console.error("Error fetching user info:", error);
       } else {
-        console.log(data)
-        setUserInfo({firstName:data.user_firstname, lastName:data.user_lastname});
+        const firstName = data.name.split(' ');
+        setUserInfo({name:firstName[0]});
       }
     };
 
@@ -57,7 +57,7 @@ const GreetingCard = () => {
 
   return (
     <div className="m-6 p-4 rounded-lg text-white bg-gradient-to-r from-[#A584EC] to-[#5E4B86]/40">
-      <h2 className="text-2xl font-bold py-2">{wish}, {userInfo.firstName}!</h2>
+      <h2 className="text-2xl font-bold py-2">{wish}, {userInfo.name}!</h2>
       <p className="text-sm font-thin">
         {formattedDate} • {formattedDay} • {temperature !== null ? `${temperature}°C` : "Loading..."}
       </p>

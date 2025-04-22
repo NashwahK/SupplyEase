@@ -14,6 +14,8 @@ const Products = () => {
   const [productMaterials, setProductMaterials] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [categories, setCategories] = useState([]);
   const [priceValue, setPriceValue] = useState(20);
   const [productData, setProductData] = useState({
@@ -57,6 +59,25 @@ const Products = () => {
   const handleAddProduct = (newProduct) => {
     setProducts((prev) => [...prev, newProduct]);
   };
+
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+  
+    const { error } = await supabase
+      .from("product")
+      .delete()
+      .eq("id", productToDelete.id);
+  
+    if (error) {
+      console.error("Error deleting product:", error);
+    } else {
+      setProducts(prev => prev.filter(p => p.id !== productToDelete.id));
+    }
+  
+    setShowDeleteConfirm(false);
+    setProductToDelete(null);
+  };
+  
 
   const handlePriceChange = (newPrice) => setPriceValue(newPrice);
   const incrementPrice = () => setPriceValue(priceValue + 1);
@@ -171,6 +192,32 @@ const Products = () => {
           }}
       />
         )}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/30">
+            <div className="bg-[#2E2047] p-6 rounded-xl shadow-xl w-96">
+              <h2 className="text-lg font-bold mb-4 text-white">Confirm Deletion</h2>
+              <p className="text-sm text-gray-300 mb-6">
+                Are you sure you want to delete <span className="font-semibold">{productToDelete?.name}</span>?
+                This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 rounded-lg bg-gray-500 text-white hover:bg-gray-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-800 transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 };

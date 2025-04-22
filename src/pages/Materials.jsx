@@ -14,6 +14,8 @@ const Materials = () => {
   const [materials, setMaterials] = useState([]);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [materialToDelete, setMaterialToDelete] = useState(null);
   const storage = ["Warehouse 56", "Warehouse 24", "Warehouse 13"];
 
   useEffect(() => {
@@ -42,6 +44,24 @@ const Materials = () => {
     console.log("Add Material Data:", data);
   };
 
+  const handleConfirmDelete = async () => {
+    if (!materialToDelete) return;
+  
+    const { error } = await supabase
+      .from("material")
+      .delete()
+      .eq("material_id", materialToDelete.material_id);
+  
+    if (error) {
+      console.error("Error deleting material:", error);
+    } else {
+      setMaterials(prev => prev.filter(m => m.material_id !== materialToDelete.material_id));
+    }
+  
+    setShowDeleteConfirm(false);
+    setMaterialToDelete(null);
+  };
+  
   // Search criterion is storage location here
   const filteredMaterials = materials.filter(m =>
     m.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -104,6 +124,32 @@ const Materials = () => {
       
       
       )}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/30">
+          <div className="bg-[#2E2047] p-6 rounded-xl shadow-xl w-96">
+            <h2 className="text-lg font-bold mb-4 text-white">Confirm Deletion</h2>
+            <p className="text-sm text-gray-300 mb-6">
+              Are you sure you want to delete <span className="font-semibold">{materialToDelete?.name}</span>? 
+              This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
