@@ -1,7 +1,9 @@
-// TODO: ADD TOASTERS
 import { useState, useEffect } from 'react';
 import { Plus, Edit, X } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import { Snackbar } from '@mui/material';
+import { Alert } from '@mui/material';
+import { Loader2 } from "lucide-react";
 
 const fetchMaterials = async () => {
   const { data, error } = await supabase.rpc('get_materials');
@@ -28,6 +30,7 @@ const ProductAddBox = ({
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [unitPrice, setUnitPrice] = useState(priceValue);
+  const [priceMinimumValue, setPriceMinimumValue] = useState(0);
   const [category, setCategory] = useState('');
   const [sizeType, setSizeType] = useState('');
   const [sizeOptions, setSizeOptions] = useState([]);
@@ -36,6 +39,10 @@ const ProductAddBox = ({
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'error' | 'success'
+
   const alphabeticSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
   const numericSizes = ["28\"", "30\"", "32\"", "34\"", "36\"", "38\"", "40\"", "42\"", "44\""];
   const batchList = [20, 50, 100, 250, 500, 1000];
@@ -52,10 +59,6 @@ const ProductAddBox = ({
     { name: 'Grey', class: 'bg-gray-400' },
     { name: 'Pink', class: 'bg-pink-400' },
   ];
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedBatch, setSelectedBatch] = useState('');
-  const [selectedColors, setSelectedColors] = useState('');
-
 
   const toggleColor = (color) => {
     setSelectedColors(prev =>
@@ -64,6 +67,14 @@ const ProductAddBox = ({
         : [...prev, color]
     );
   };
+  const handleImageRemove = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedBatch, setSelectedBatch] = useState('');
+  const [selectedColors, setSelectedColors] = useState('');
 
   useEffect(() => {
     const loadMaterials = async () => {
@@ -94,21 +105,28 @@ const ProductAddBox = ({
       return total + material.unit_price * materialQty;
     }, 0);
   
+    setPriceMinimumValue(newTotal);
     onPriceChange(newTotal);
   };
-  
 
-  const calculateBaseUnitPrice = () => {
-    return selectedMaterials.reduce((total, material) => {
-      const qty = quantities[material.material_id] || 0;
-      return total + parseFloat(material.unit_price) * qty;
-    }, 0);
-  };
-
-  const handlePriceChange = (newPrice) => {
-    if (newPrice >= calculateBaseUnitPrice()) {
-      onPriceChange(newPrice);
+  const validateForm = () => {
+    if (!productTitle || !category || !description || !selectedMaterials.length || !selectedSize.length || !selectedBatch.length || !selectedColors.length) {
+      setSnackbarSeverity('error');
+      setSnackbarMessage('Please fill all required fields.');
+      setOpenSnackbar(true);
+      return false;
     }
+
+    for (const material of selectedMaterials) {
+      if (!quantities[material.material_id] || quantities[material.material_id] <= 0) {
+        setSnackbarSeverity('error');
+        setSnackbarMessage(`Quantity is required for ${material.name}.`);
+        setOpenSnackbar(true);
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const handleImageUpload = (e) => {
@@ -122,12 +140,10 @@ const ProductAddBox = ({
     }
   };
 
-  const handleImageRemove = () => {
-    setImagePreview(null);
-  };
-
   const handleSubmit = async () => {
-    console.log("Form data before submission:", { // Why-the-heck-are-data-fields-still-wonky checker
+    if (!validateForm()) return;
+
+    console.log("Form data before submission:", {
       productTitle,
       description,
       category,
@@ -139,6 +155,7 @@ const ProductAddBox = ({
       imagePreview,
       quantities
     });
+
     try {
       setUploading(true);
 
@@ -148,7 +165,9 @@ const ProductAddBox = ({
         const allowedTypes = ['jpeg', 'jpg', 'png'];
 
         if (!allowedTypes.includes(fileExt)) {
-          alert('Invalid file type. Please upload a JPG or PNG image.');
+          setSnackbarSeverity('error');
+          setSnackbarMessage('Invalid file type. Please upload a JPG or PNG image.');
+          setOpenSnackbar(true);
           return;
         }
 
@@ -174,18 +193,16 @@ const ProductAddBox = ({
 
       const { data: productData, error: productInsertError } = await supabase
         .from('product')
-        .insert([
-          {
-            name: productTitle,
-            description,
-            category,
-            available_sizes: selectedSize.join(','),
-            batch_quantities: selectedBatch.join(','),
-            available_colors: selectedColors.join(','),
-            unit_price: priceValue,
-            image: imageUrl || null,
-          },
-        ])
+        .insert([{
+          name: productTitle,
+          description,
+          category,
+          available_sizes: selectedSize.join(','),
+          batch_quantities: selectedBatch.join(','),
+          available_colors: selectedColors.join(','),
+          unit_price: priceValue,
+          image: imageUrl || null,
+        }])
         .select('product_id')
         .single();
 
@@ -194,30 +211,51 @@ const ProductAddBox = ({
       const productId = productData.product_id;
 
       const productMaterialEntries = selectedMaterials
-      .filter((material) => quantities[material.material_id] > 0)
-      .map((material) => ({
-        product_id: productId,
-        material_id: material.material_id,
-        quantity_used: quantities[material.material_id],
-      }));
-    
+        .filter((material) => quantities[material.material_id] > 0)
+        .map((material) => ({
+          product_id: productId,
+          material_id: material.material_id,
+          quantity_used: quantities[material.material_id],
+        }));
 
       const { error: materialLinkError } = await supabase
         .from('product_material')
         .insert(productMaterialEntries);
 
       if (materialLinkError) throw materialLinkError;
-      setProductTitle('');setDescription('');setCategory('');setSizeOptions([]);setBatchOptions([]);setColourOptions([]);setSelectedMaterials([]);setUnitPrice(0);setImageFile(null);setImagePreview(null);
 
-      alert('Product saved successfully!');
+      setProductTitle('');
+      setDescription('');
+      setCategory('');
+      setSizeOptions([]);
+      setBatchOptions([]);
+      setColourOptions([]);
+      setSelectedMaterials([]);
+      setUnitPrice(0);
+      setImageFile(null);
+      setImagePreview(null);
+
+      setSnackbarSeverity('success');
+      setSnackbarMessage('Product saved successfully!');
+      setOpenSnackbar(true);
     } catch (err) {
       console.error('Error saving product:', err.message || err);
-      alert('Failed to save product.');
+      setSnackbarSeverity('error');
+      setSnackbarMessage('Failed to save product.');
+      setOpenSnackbar(true);
     } finally {
       setUploading(false);
     }
   };
+
+  const handlePriceChange = (newPrice) => {
+    // You can also add any other rules here if you want (like max value)
+    if (newPrice >= priceMinimumValue) {
+      setUnitPrice(newPrice);
+    }
+  };
   
+
   return (
     <div className="bg-[#8D67CE] text-white rounded-xl p-6 flex flex-col lg:flex-row gap-6 w-full">
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -381,11 +419,7 @@ const ProductAddBox = ({
                 key={color.name}
                 type="button"
                 onClick={() => toggleColor(color.name)}
-                className={`w-8 h-8 rounded-full border-2 transition ${color.class} ${
-                  selectedColors.includes(color.name)
-                    ? 'ring-2 ring-black ring-offset-2'
-                    : 'ring-2 ring-transparent'
-                }`}
+                className={`w-8 h-8 rounded-full border-2 transition ${color.class} ${selectedColors.includes(color.name) ? 'ring-2 ring-black ring-offset-2' : 'ring-2 ring-transparent'}`}
               />
             ))}
           </div>
@@ -393,11 +427,19 @@ const ProductAddBox = ({
   
         {/* Submit Button */}
         <button
-          onClick={handleSubmit}
-          className="col-span-full mt-4 bg-[#C2A8FA] hover:bg-[#b69af7] text-black font-semibold py-2 px-4 rounded"
-        >
-          Save Changes
-        </button>
+            onClick={handleSubmit}
+            className="col-span-full mt-4 bg-[#C2A8FA] hover:bg-[#b69af7] text-black font-semibold py-2 px-4 rounded flex items-center justify-center gap-2"
+            disabled={uploading}
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Saving...
+              </>
+            ) : (
+              'Save Product'
+            )}
+          </button>
       </div>
   
       {/* Image Upload */}
@@ -432,6 +474,15 @@ const ProductAddBox = ({
           onChange={handleImageUpload}
         />
       </div>
+      <Snackbar
+      open={openSnackbar}
+      autoHideDuration={6000}
+      onClose={() => setOpenSnackbar(false)}
+    >
+      <Alert severity={snackbarSeverity} onClose={() => setOpenSnackbar(false)}>
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
     </div>
   );
   

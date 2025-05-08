@@ -34,7 +34,7 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarRef }) => {
             Materials
           </Link>
           <hr className="border-[#A584EC]" />
-          <Link to="/profile" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
+          <Link to="/profile-mgt" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
             Profile Management
           </Link>
           <Link to="/" className="text-[#F94545] hover:text-[#A584EC]" onClick={handleLogout}>

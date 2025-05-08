@@ -61,22 +61,32 @@ const Products = () => {
   };
 
   const handleConfirmDelete = async () => {
+    console.log(productToDelete);
     if (!productToDelete) return;
+
+    const { error: deleteProductMaterialError } = await supabase
+      .from("product_material")
+      .delete()
+      .eq("product_id", productToDelete.product_id);
   
+    if (deleteProductMaterialError) {
+      console.error("Error deleting product references from product_material:", deleteProductMaterialError);
+      return; 
+    }
     const { error } = await supabase
       .from("product")
       .delete()
-      .eq("id", productToDelete.id);
+      .eq("product_id", productToDelete.product_id);
   
     if (error) {
       console.error("Error deleting product:", error);
     } else {
-      setProducts(prev => prev.filter(p => p.id !== productToDelete.id));
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
     }
-  
     setShowDeleteConfirm(false);
     setProductToDelete(null);
   };
+  
   
 
   const handlePriceChange = (newPrice) => setPriceValue(newPrice);

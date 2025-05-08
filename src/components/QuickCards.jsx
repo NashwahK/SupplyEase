@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import Skeleton from "react-loading-skeleton"; // Import Skeleton
 
 const QuickCard = () => {
   const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(true); // Track loading state
 
   const getPercentageChange = (current, previous) => {
     if (previous === 0) return 100;
@@ -13,8 +15,8 @@ const QuickCard = () => {
   const formatRs = (value) => `Rs. ${Math.round(value / 1000)}k`;
 
   useEffect(() => {
-    // TODO: Recheck RPC names after final update at DB
     const fetchData = async () => {
+      setLoading(true); // Start loading
       // Card 1 : Inventory Quantity
       const { data: inventory } = await supabase.rpc("get_order_quantity_weekly_comparison");
       const invCurrent = inventory?.[0]?.["Current Week"] || 0;
@@ -48,7 +50,7 @@ const QuickCard = () => {
       const aovChange = getPercentageChange(aovCurr, aovPrev);
 
       setCards([
-        { // Change card order here. MAYBE: Bring the ECOM-specific ones higher. 
+        {
           title: "Inventory Quantity",
           value: invCurrent.toLocaleString(),
           percentage: `${Math.abs(invChange)}%`,
@@ -84,6 +86,7 @@ const QuickCard = () => {
           label: "compared to last month"
         }
       ]);
+      setLoading(false); // Stop loading once data is fetched
     };
 
     fetchData();
@@ -91,42 +94,46 @@ const QuickCard = () => {
 
   return (
     <div className="flex gap-4 flex-wrap">
-      {cards.map((card, idx) => {
-        const arrowIcon = card.isPositive ? (
-          <ArrowUpRight className="text-[#45F996]" />
-        ) : (
-          <ArrowDownRight className="text-[#F94545]" />
-        );
-        const percentColor = card.isPositive ? "text-[#45F996]" : "text-[#F94545]";
-
-        return (
-          <div
-            key={idx}
-            className="bg-[#2E2047] p-4 rounded-xl w-72 h-48 text-white shadow-md space-y-1"
-          >
-            <h3 className="text-sm font-semibold text-gray-300">{card.title}</h3>
-            <p className="text-5xl font-bold text-center pt-4">{card.value}</p>
-            <div className={`flex flex-col items-center text-center gap-1 text-sm ${percentColor}`}>
-              {card.title === "Gross Margin" ? (
-                <>
+      {loading
+        ? Array.from({ length: 5 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="bg-[#2E2047] p-4 rounded-xl w-72 h-48 text-white shadow-md space-y-1"
+            >
+              <Skeleton width={120} />
+              <Skeleton height={40} />
+              <Skeleton width={80} />
+              <Skeleton width={100} />
+            </div>
+          ))
+        : cards.map((card, idx) => {
+            const arrowIcon = card.isPositive ? (
+              <ArrowUpRight className="text-[#45F996]" />
+            ) : (
+              <ArrowDownRight className="text-[#F94545]" />
+            );
+            const percentColor = card.isPositive ? "text-[#45F996]" : "text-[#F94545]";
+  
+            return (
+              <div
+                key={idx}
+                className="bg-[#2E2047] p-4 rounded-xl w-72 h-48 text-white shadow-md space-y-1"
+              >
+                <h3 className="text-sm font-semibold text-gray-300">{card.title}</h3>
+                <p className="text-5xl font-bold text-center pt-4">{card.value}</p>
+                <div className={`flex flex-col items-center text-center gap-1 text-sm ${percentColor}`}>
                   <div className="flex items-center pt-2 gap-1">
                     {arrowIcon}
                     <span>{card.percentage}</span>
                   </div>
-                </>
-              ) : (
-                <div className="flex items-center pt-2 gap-1">
-                  {arrowIcon}
-                  <span>{card.percentage}</span>
+                  <span className="pt-2 text-gray-400">{card.label}</span>
                 </div>
-              )}
-              <span className="pt-2 text-gray-400">{card.label}</span>
-            </div>
-          </div>
-        );
-      })}
+              </div>
+            );
+          })}
     </div>
   );
+  
 };
 
 export default QuickCard;
