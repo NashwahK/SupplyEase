@@ -12,6 +12,8 @@ export function transformTrackingData(flatData) {
     const departmentName = row["Department"];
     const entry = row["Entry Timestamp"];
     const exit = row["Exit Timestamp"];
+    const tagUID = row["Tag UID"];
+    const itemId = row["Item ID"]; // Use Item ID from your new function
     const deptId = departmentIdMap[departmentName];
 
     const orderKey = `${orderId}_${deliveryDate}_${status}`;
@@ -27,11 +29,16 @@ export function transformTrackingData(flatData) {
 
     const order = ordersMap.get(orderKey);
 
-    let deliverable = order.deliverables.find(d => d.title === product);
+    // Identify unique deliverable by both product and item ID (not tag UID anymore)
+    let deliverable = order.deliverables.find(
+      d => d.title === product && d.itemId === itemId // Match on item ID
+    );
+
     if (!deliverable) {
       deliverable = {
         title: product,
         quantity,
+        itemId, // Store item ID
         departments: [],
       };
       order.deliverables.push(deliverable);
