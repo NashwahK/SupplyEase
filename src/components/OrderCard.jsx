@@ -7,9 +7,16 @@ const OrderCard = ({ order }) => {
   const [expanded, setExpanded] = useState(false);
 
   const statusColors = {
+<<<<<<< HEAD
     "In-Progress": "#F9C645",
     Completed: "#45F996",
     Late: "#F94545",
+=======
+    "In Progress": "#F9C645",
+    Completed: "#45F996",
+    Late: "#F94545",
+    Shipped: "#45F996"
+>>>>>>> master
   };
 
   return (
@@ -49,4 +56,8 @@ const OrderCard = ({ order }) => {
   );
 };
 
+<<<<<<< HEAD
 export default OrderCard;
+=======
+export default OrderCard;
+>>>>>>> master

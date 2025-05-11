@@ -29,4 +29,8 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+<<<<<<< HEAD
 export const useAuth = () => useContext(AuthContext);
+=======
+export const useAuth = () => useContext(AuthContext);
+>>>>>>> master

@@ -8,5 +8,13 @@ export default defineConfig(() => {
       outDir: 'build',
     },
     plugins: [react(), tailwindcss(),],
+<<<<<<< HEAD
+=======
+    server: {
+      host: true, // needed to expose Vite to external
+      allowedHosts: ['.ngrok-free.app'],
+      port: 5173, // or any port you're using
+    },
+>>>>>>> master
   };
 });
