@@ -3,7 +3,6 @@ import { supabase } from '../../supabaseClient';
 import SearchBar from '../../components/SearchBar';
 import OrderCard from '../../components/OrderCard';
 import { transformTrackingData } from '../../../utils/transformTrackingData';
-import RetailerHeader from '../../components/RetailerHeader';
 import Footer from '../../components/RetailerFooter';
 import Header from '../../components/RetailerHeader';
 
@@ -57,31 +56,36 @@ const OrderTracking = () => {
   let profilephoto = sessionStorage.getItem("image");
 
   return (
-    <div className="min-h-screen px-6">
+    <div className="min-h-screen flex flex-col px-6">
       {sessionStorage.getItem("customer_id") ? (
-      <Header profilePhoto={profilephoto} />
-      ) : (<Header />
-      )}
-      {notLoggedIn ? (
-        <div className="text-center text-red-500 mt-10 text-xl font-semibold">
-          Please login as customer to track your orders.
-        </div>
+        <Header profilePhoto={profilephoto} />
       ) : (
-        <>
-          <SearchBar
-            placeholder="Type in your order number..."
-            onSearch={handleSearch}
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
-          <div className="mt-6 flex flex-col gap-4">
-            {filteredOrders.map((order) => (
-              <OrderCard key={order.orderId} order={order} />
-            ))}
-          </div>
-        </>
+        <Header />
       )}
+
+      <div className="flex-grow">
+        {notLoggedIn ? (
+          <div className="text-center text-red-500 mt-10 text-xl font-semibold">
+            Please login as customer to track your orders.
+          </div>
+        ) : (
+          <>
+            <SearchBar
+              placeholder="Type in your order number..."
+              onSearch={handleSearch}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
+            <div className="mt-6 flex flex-col gap-4">
+              {filteredOrders.map((order) => (
+                <OrderCard key={order.orderId} order={order} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
       <Footer />
     </div>
   );

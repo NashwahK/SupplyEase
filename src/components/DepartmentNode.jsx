@@ -1,11 +1,11 @@
 import React from "react";
 import clsx from "clsx";
 
-const departmentIcons = {
-  1: "../../public/assets/factory_16492396.png",
+const departmentIcons = { // DB?
+  1: "../../public/assets/processing_10614604.png",
   2: "../../public/assets/Manufacturing 2.png",
-  3: "../../public/assets/processing_10614604.png",
-  4: "../../public/assets/organic-material_15443661.png",
+  3: "../../public/assets/organic-material_15443661.png",
+  4: "../../public/assets/Manufacturing 2.png",
   5: "../../public/assets/Production.png",
   6: "../../public/assets/Design.png",
   7: "../../public/assets/Stitching.png",
