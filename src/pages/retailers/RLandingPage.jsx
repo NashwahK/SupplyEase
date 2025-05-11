@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-const RLandingPage = () => {
-
-    return(
-        <div>Retailers Portal Landing Page</div>
-    )
-
-}
-
-export default RLandingPage
-=======
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient"; // adjust path to your client
@@ -149,4 +138,3 @@ const RLandingPage = () => {
 };
 
 export default RLandingPage;
->>>>>>> master

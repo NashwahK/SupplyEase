@@ -18,19 +18,21 @@ const LoginCard = ({ toggleView }) => {
       email,
       password,
     });
+
+    console.log(loginData)
   
     if (signInError) {
       setError("Authentication failed. Please check your email and password.");
       return;
     }
   
-    const userId = loginData.user.id;
+    const userEmail = loginData.user.email;
   
-    // Check if user already has a profile in the public Users table
+    // Check if user already has a profile in the public supply_chain_manager table
     const { data: existingProfile, error: profileError } = await supabase
-      .from("Users")
-      .select("user_id")
-      .eq("user_id", userId)
+      .from("supply_chain_manager")
+      .select("email_address")
+      .eq("email_address", userEmail)
       .single();
   
     if (profileError && profileError.code !== "PGRST116") {

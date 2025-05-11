@@ -1,8 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
 const Sidebar = ({ isOpen, toggleSidebar, sidebarRef }) => {
+
+  const navigate = useNavigate();
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) {
@@ -33,7 +34,7 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarRef }) => {
             Materials
           </Link>
           <hr className="border-[#A584EC]" />
-          <Link to="/profile" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
+          <Link to="/profile-mgt" className="hover:text-[#A584EC]" onClick={toggleSidebar}>
             Profile Management
           </Link>
           <Link to="/" className="text-[#F94545] hover:text-[#A584EC]" onClick={handleLogout}>
