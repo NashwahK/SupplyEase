@@ -5,8 +5,7 @@ import QuickCard from "../components/QuickCards";
 import BarChart from "../components/BarChart";
 import PieChart from "../components/PieChart";
 import Scale from "../components/Scale";
-import MainBg from "../../public/assets/DashboardBg.png";
-import { supabase } from "../supabaseClient";
+import MainBg from "../../public/assets/DashboardBg.png"
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,36 +13,9 @@ const Dashboard = () => {
     navigate("/rlandingpage");
   };
 
-  const statData = [
-    {
-      title: "Inventory Quantity",
-      value: "1,420",
-      percentage: "13%",
-      isPositive: true,
-    },
-    {
-      title: "Order Fulfillment Rate",
-      value: "92%",
-      percentage: "8%",
-      isPositive: true,
-    },
-    {
-      title: "Days of Supply",
-      value: "36",
-      percentage: "2%",
-      isPositive: true,
-    },
-  ];
-
   return (
-    <div
-      className="min-h-screen text-white"
-      style={{
-        backgroundImage: `url(${MainBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="min-h-screen text-white" 
+      style={{ backgroundImage: `url(${MainBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <Navbar />
       <GreetingCard />
 
@@ -57,14 +29,12 @@ const Dashboard = () => {
       </div>
 
       <div className="px-6 mt-6 grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Left Column - QuickCards */}
+        {/* Quick Cards Edit Here !!!!!!!!!*/}
         <div className="flex flex-col gap-4 lg:col-span-1">
-          {statData.map((stat, index) => (
-            <QuickCard key={index} {...stat} />
-          ))}
+            <QuickCard />
         </div>
 
-        {/* Right Columns - Graphs */}
+        {/* Graphs Edit Here !!!!!!!!!!!!! */}
         <div className="lg:col-span-3 flex flex-col gap-6">
           <BarChart title="Stock Levels" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

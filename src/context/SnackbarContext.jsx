@@ -32,8 +32,4 @@ export const SnackbarProvider = ({ children }) => {
       </Snackbar>
     </SnackbarContext.Provider>
   );
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> master
