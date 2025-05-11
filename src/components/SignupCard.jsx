@@ -12,11 +12,7 @@ const SignUpCard = ({ toggleView }) => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-<<<<<<< HEAD
   const [showPassword, setShowPassword] = useState(false); // Toggle for showing/hiding password
-=======
-  const [showPassword, setShowPassword] = useState(false);
->>>>>>> master
   const [error, setError] = useState("");
   const [passwordValid, setPasswordValid] = useState({
     length: false,
@@ -156,8 +152,4 @@ const SignUpCard = ({ toggleView }) => {
   );
 };
 
-<<<<<<< HEAD
 export default SignUpCard;
-=======
-export default SignUpCard;
->>>>>>> master

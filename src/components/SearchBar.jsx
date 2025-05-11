@@ -36,8 +36,4 @@ const SearchBar = ({
   );
 };
 
-<<<<<<< HEAD
 export default SearchBar;
-=======
-export default SearchBar;
->>>>>>> master
