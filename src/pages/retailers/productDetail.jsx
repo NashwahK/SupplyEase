@@ -39,6 +39,7 @@ const ProductDetail = () => {
 
     // Step 4: Save updated array back to sessionStorage
     sessionStorage.setItem('myItems', JSON.stringify(items));
+    alert("Item Added to cart")
     
     if (sessionStorage.get("customer_id")){
       navigate('/payment');
