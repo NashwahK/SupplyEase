@@ -85,6 +85,7 @@ const Materials = () => {
         selectedCategory={selectedStorage}
         onCategoryChange={setSelectedStorage}
       />
+      <div className='flex justify-center'>
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredMaterials.map((material, idx) => (
           <ItemCard
@@ -107,6 +108,7 @@ const Materials = () => {
           }}
         />        
         ))}
+      </div>
       </div>
       {isModalOpen && (
         <MaterialEditModal

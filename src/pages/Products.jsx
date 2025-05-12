@@ -161,7 +161,8 @@ const Products = () => {
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
       />
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className='flex justify-center'>
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product, idx) => (
             <ItemCard
@@ -187,6 +188,7 @@ const Products = () => {
           <p className="text-center text-white">No products found</p>
         )}
         
+      </div>
       </div>
       {isModalOpen && (
         <ProductEditModal

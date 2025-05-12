@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Loader2, UploadCloud } from "lucide-react";
+import { Snackbar } from '@mui/material';
+import { Alert } from '@mui/material';
+
 import MainBg from "../../public/assets/DashboardBg.png"; 
 import Navbar from "../components/Navbar";
 
@@ -14,7 +17,7 @@ const ProfileMgt = () => {
   const [saving, setSaving] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); 
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'error' | 'success'
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -61,7 +64,7 @@ const ProfileMgt = () => {
     if (!name || !contactNo || !city) {
       setSnackbarSeverity('error'); // Show error severity if fields are empty
       setSnackbarMessage("Please fill in all the fields.");
-      setSnackbarOpen(true);
+      setOpenSnackbar(true);
       return;
     }
   
@@ -111,15 +114,15 @@ const ProfileMgt = () => {
       // Set success message if everything goes fine
       setSnackbarSeverity('success');
       setSnackbarMessage('Profile updated successfully!');
-      setSnackbarOpen(true);
+      setOpenSnackbar(true);
   
     } catch (err) {
       console.error('Error updating profile:', err.message);
       setSnackbarSeverity('error'); // Set error severity on failure
       setSnackbarMessage('Error updating profile. Please try again.');
-      setSnackbarOpen(true);
+      setOpenSnackbar(true);
     } finally {
-      setSaving(false); // Ensure saving state is reset even if there's an error
+      setSaving(false);
     }
   };
     
@@ -211,6 +214,15 @@ const ProfileMgt = () => {
 
         </div>
         </div>
+        <Snackbar
+              open={openSnackbar}
+              autoHideDuration={6000}
+              onClose={() => setOpenSnackbar(false)}
+            >
+              <Alert severity={snackbarSeverity} onClose={() => setOpenSnackbar(false)}>
+                {snackbarMessage}
+              </Alert>
+            </Snackbar>
         </div>
 
   );
