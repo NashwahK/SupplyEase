@@ -5,7 +5,7 @@ export const generatePayFastUrl = async (amount, itemName) => {
     merchant_key: "lfagxz2ah6qvr",
     amount: amount,
     item_name: itemName,
-    return_url: "https://4a2a-223-123-112-41.ngrok-free.app/rlandingpage",
+    return_url: "https://e343-223-123-119-34.ngrok-free.app/rlandingpage",
     cancel_url: "https://example.com/onCancel"
   });
 

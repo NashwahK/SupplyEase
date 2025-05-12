@@ -82,9 +82,9 @@ const PaymentPage = () => {
         alert("Failed to insert order items.");
         return;
       }
-
+      const itemNames=itemNameState.map(item => item.name).join(", ");
       // 1. Generate PayFast URL
-      const url = await generatePayFastUrl(amount, itemName);
+      const url = await generatePayFastUrl(amount, itemNames);
       if (!url) {
           alert("Payment URL could not be generated.");
           return;

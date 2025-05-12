@@ -8,5 +8,8 @@ export default defineConfig(() => {
       outDir: 'build',
     },
     plugins: [react(), tailwindcss(),],
+     server: {
+    allowedHosts: ['e343-223-123-119-34.ngrok-free.app'],
+  },
   };
 });

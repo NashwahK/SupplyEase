@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 const Footer = () => {
   const navigate = useNavigate(); // ✅ use hook inside component
@@ -24,10 +24,10 @@ const Footer = () => {
 
       {/* Center - Navigation Links */}
       <ul className="flex flex-col gap-2 text-lg md:text-[32px] text-center italic font-light">
-        <li className="hover:underline cursor-pointer">Home</li>
-        <li className="hover:underline cursor-pointer">Products</li>
-        <li className="hover:underline cursor-pointer">Product Authenticity</li>
-        <li className="hover:underline cursor-pointer">My Orders</li>
+        <li className="hover:underline cursor-pointer"><Link to="/rlandingpage">Home</Link></li>
+        <li className="hover:underline cursor-pointer"><Link to="/productcatalog">Products</Link></li>
+        <li className="hover:underline cursor-pointer"><Link to="/productauthenticity">Product Authenticity</Link></li>
+        
       </ul>
 
       {/* Right Side - Logout Button */}
