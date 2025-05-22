@@ -1,6 +1,6 @@
-import { Navigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { Outlet, Navigate } from "react-router-dom";
 
 const PrivateRoute = () => {
   const [user, setUser] = useState(null);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { supabase } from "../../supabaseClient"; // adjust path to your client
 import { Link } from "react-router-dom";
 import Header from "../../components/RetailerHeader";
 import Footer from "../../components/RetailerFooter";
@@ -7,12 +8,47 @@ import { useNavigate } from "react-router-dom"; // at the top of your file
 const CartPage = () => {
   const navigate = useNavigate(); // inside your component
   const [cartItems, setCartItems] = useState([]);
-  const profilephoto = sessionStorage.getItem("image");
+  const [image, setImage] = useState(null); // Add state for image
+
+  
 
   useEffect(() => {
     const storedItems = JSON.parse(sessionStorage.getItem("myItems")) || [];
     setCartItems(storedItems);
   }, []);
+  
+  
+    useEffect(() => {
+        const customer = JSON.parse(sessionStorage.getItem("customer_id"));
+        console.log(customer);
+    
+        const fetchData = async () => {
+          // Fetch categories
+  
+          const { data: imageData, error: imageError } = await supabase
+            .from("customer")
+            .select("profile_photo")
+            .eq("customer_id", customer.customer_id)
+            .single();
+          console.log(imageData);
+  
+    
+          if (imageError) {
+            console.error("Error fetching profile photo:", imageError);
+          } else {
+            setImage(imageData.profile_photo); // Set the profile image in state
+            sessionStorage.setItem("image",imageData.profile_photo)
+          }
+    
+  
+        };
+    
+        fetchData();
+      }, []);
+    
+  
+
+  
 
   const handleRemove = (indexToRemove) => {
     const updatedItems = cartItems.filter((_, index) => index !== indexToRemove);
@@ -41,10 +77,7 @@ const CartPage = () => {
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gradient-to-br from-[#EBDDFC] to-[#D0BDFB] text-[#2E2047]">
       {/* Navbar */}
-      {sessionStorage.getItem("customer_id") ? (
-      <Header profilePhoto={profilephoto} />
-      ) : (<Header />
-      )}
+      <Header profilePhoto={image} />
 
       {/* Cart Content */}
       <main className="flex-grow p-6 md:px-32 md:py-10">
