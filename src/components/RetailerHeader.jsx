@@ -32,7 +32,7 @@ const RetailerHeader = ({ profilePhoto }) => {
           <Link to="/loginretailer">
             <img
               alt="User"
-              src={profilePhoto ? profilePhoto : "/user.png"}
+              src={profilePhoto || "public/user.png"}
               className="object-cover h-full w-full"
             />
           </Link>

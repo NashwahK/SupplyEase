@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { FiFilter } from "react-icons/fi";
 import { supabase } from "../../supabaseClient"; // adjust the path based on your project structure
@@ -51,6 +53,7 @@ const ProductCatalog = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [image, setImage] = useState(null); // Add state for image
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -79,15 +82,40 @@ const ProductCatalog = () => {
       setFilteredProducts(products); // Show all products when search query is empty
     }
   }, [searchQuery, products]);
-  let profilephoto=sessionStorage.getItem("image");
+
+  useEffect(() => {
+      const customer = JSON.parse(sessionStorage.getItem("customer_id"));
+      console.log(customer);
+  
+      const fetchData = async () => {
+        // Fetch categories
+
+        const { data: imageData, error: imageError } = await supabase
+          .from("customer")
+          .select("profile_photo")
+          .eq("customer_id", customer.customer_id)
+          .single();
+        console.log(imageData);
+
+  
+        if (imageError) {
+          console.error("Error fetching profile photo:", imageError);
+        } else {
+          setImage(imageData.profile_photo); // Set the profile image in state
+          sessionStorage.setItem("image",imageData.profile_photo)
+        }
+  
+
+      };
+  
+      fetchData();
+    }, []);
+  
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gradient-to-br from-[#EBDDFC] to-[#D0BDFB]">
       {/* Navbar */}
-      {sessionStorage.getItem("customer_id") ? (
-      <Header profilePhoto={profilephoto} />
-      ) : (<Header />
-      )}
+<Header profilePhoto={image} />
 
       {/* Search */}
       <div className="flex items-center justify-center px-6 w-[100%] mt-6">

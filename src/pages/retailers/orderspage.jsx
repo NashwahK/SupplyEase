@@ -11,7 +11,59 @@ const OrderTracking = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [notLoggedIn, setNotLoggedIn] = useState(false);
+  const [image, setImage] = useState(null); // Add state for image
   const categories = ["In Progress", "Completed", "Late", "Shipped"];
+
+
+  
+    useEffect(() => {
+        const customer = JSON.parse(sessionStorage.getItem("customer_id"));
+        console.log(customer);
+    
+        const fetchData = async () => {
+          // Fetch categories
+          const { data: categoryData, error: categoryError } = await supabase
+            .from("product")
+            .select("category", { distinct: true });
+    
+          const { data: imageData, error: imageError } = await supabase
+            .from("customer")
+            .select("profile_photo")
+            .eq("customer_id", customer.customer_id)
+            .single();
+          console.log(imageData);
+    
+          if (categoryError) {
+            setError("Failed to load categories");
+            console.error(categoryError);
+          } else {
+            const uniqueCategories = [...new Set(categoryData.map(item => item.category))];
+            setSelectedCategory(uniqueCategories);
+          }
+    
+          if (imageError) {
+            console.error("Error fetching profile photo:", imageError);
+          } else {
+            setImage(imageData.profile_photo); // Set the profile image in state
+            sessionStorage.setItem("image",imageData.profile_photo)
+          }
+    
+          // Fetch past orders
+          const { data: orders, error: ordersError } = await supabase
+            .from("order")
+            .select("*")
+            .eq("customer_id", customer.customer_id);
+          console.log(orders);
+    
+          if (ordersError) {
+            console.error("Error fetching past orders:", ordersError);
+          } else {
+            setOrders(orders);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -53,15 +105,11 @@ const OrderTracking = () => {
     (selectedCategory === "" || o.status === selectedCategory)
   );
 
-  let profilephoto = sessionStorage.getItem("image");
+
 
   return (
     <div className="min-h-screen flex flex-col px-6">
-      {sessionStorage.getItem("customer_id") ? (
-        <Header profilePhoto={profilephoto} />
-      ) : (
-        <Header />
-      )}
+      <Header profilePhoto={image} />
 
       <div className="flex-grow">
         {notLoggedIn ? (
