@@ -75,4 +75,8 @@ const Scale = ({ title }) => {
   );
 };
 
+<<<<<<< HEAD
 export default Scale;
+=======
+export default Scale;
+>>>>>>> a8e24ac (removed conflicts)
