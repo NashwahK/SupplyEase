@@ -33,7 +33,7 @@ const ProfileMgt = () => {
 
         if (!error && data) {
           setName(data.name || "");
-          setContactNo(data.contact_no || "");
+          setContactNo(data.contact_number || "");
           setCity(data.city || "");
           setImagePreview(data.profile_photo || null);
         }
@@ -100,7 +100,7 @@ const ProfileMgt = () => {
         .from('supply_chain_manager')
         .update({
           name,
-          contact_no: contactNo,
+          contact_number: contactNo,
           city,
           profile_photo: imageUrl || null, // Update with the image URL or null if no image
         })

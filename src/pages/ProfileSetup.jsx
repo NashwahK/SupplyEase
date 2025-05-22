@@ -75,7 +75,7 @@ const ProfileSetup = () => {
         email_address: user.email,
         contact_number: contactNo,
         city,
-        image: imageUrl,
+        profile_photo: imageUrl,
       },
     ]);
 

@@ -8,25 +8,11 @@ import Scale from "../components/Scale";
 import MainBg from "../../public/assets/DashboardBg.png"
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const handleRetailers = () => {
-    navigate("/rlandingpage");
-  };
-
   return (
     <div className="min-h-screen text-white" 
       style={{ backgroundImage: `url(${MainBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <Navbar />
       <GreetingCard />
-
-      <div className="px-6 my-4 flex gap-4 flex-wrap">
-        <button
-          onClick={handleRetailers}
-          className="p-3 rounded-md bg-red-800 text-white text-sm"
-        >
-          Retailers
-        </button>
-      </div>
 
       <div className="px-6 mt-6 grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Quick Cards Edit Here !!!!!!!!!*/}
