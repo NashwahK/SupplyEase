@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { generatePayFastUrl } from "./apis";
@@ -14,7 +14,37 @@ const PaymentPage = () => {
 
   const [amountState] = useState(amount || "");
   const [itemNameState] = useState(itemName || "");
+    const [image, setImage] = useState(null); // Add state for image
   console.log(itemNameState)
+
+   
+      useEffect(() => {
+          const customer = JSON.parse(sessionStorage.getItem("customer_id"));
+          console.log(customer);
+      
+          const fetchData = async () => {
+            // Fetch categories
+    
+            const { data: imageData, error: imageError } = await supabase
+              .from("customer")
+              .select("profile_photo")
+              .eq("customer_id", customer.customer_id)
+              .single();
+            console.log(imageData);
+    
+      
+            if (imageError) {
+              console.error("Error fetching profile photo:", imageError);
+            } else {
+              setImage(imageData.profile_photo); // Set the profile image in state
+              sessionStorage.setItem("image",imageData.profile_photo)
+            }
+      
+    
+          };
+      
+          fetchData();
+        }, []);
 
   const handlePayment = async () => {
     try {
@@ -101,7 +131,7 @@ const PaymentPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#cbbceb]">
       {/* Header */}
-      <Header />
+      <Header profilePhoto={image} />
 
       {/* Payment Form */}
       <main className="flex-grow flex flex-col items-center justify-center px-4">

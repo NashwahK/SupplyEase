@@ -6,13 +6,13 @@ import Login from './pages/Login';
 import ErrorPage from './pages/ErrorPage';
 import Products from './pages/Products';
 import Materials from './pages/Materials';
-import RLandingPage from './pages/retailers/RLandingPage';
-import PrivateRoute from './components/PrivateRoute';
 import ProfileSetup from './pages/ProfileSetup';
 import OrderTracking from './pages/OrderTracking';
 import ProfileMgt from './pages/ProfileMgt';
+import PrivateRoute from './components/PrivateRoute';
 
 // Retailer pages
+import RLandingPage from './pages/retailers/RLandingPage';
 import RetailerLogin from './pages/retailers/retailerlogin';
 import ProductCatalog from './pages/retailers/products-catalog';
 import CartPage from './pages/retailers/cartPage';

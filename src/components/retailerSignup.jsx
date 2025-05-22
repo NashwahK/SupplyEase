@@ -99,7 +99,7 @@ if (profilePhoto) {
           email_address:email_address,
           password:password,
           location:location,
-          contact_no: contactNo,
+          contact_number: contactNo,
           profile_photo: profilePhotoUrl,
         }]);
   
@@ -162,7 +162,7 @@ if (profilePhoto) {
             className="w-full px-4 py-2 rounded-lg bg-[#F8EDFF] text-black"
           >
             <option value="">Select Status</option>
-            <option value="Vip">VIP</option>
+            <option value="VIP">VIP</option>
             <option value="Normal">Normal</option>
           </select>
         </div>

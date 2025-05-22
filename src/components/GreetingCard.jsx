@@ -1,15 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../context/AuthProvider";
-import Skeleton from "react-loading-skeleton"; // Import Skeleton
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css"; // Optional but recommended for styling
 
 const GreetingCard = () => {
   const [temperature, setTemperature] = useState(null);
   const [userInfo, setUserInfo] = useState({ name: "" });
   const today = new Date();
-  const formattedDate = today.toLocaleString("en-US", { day: "numeric", month: "long", year: "numeric" });
+  const formattedDate = today.toLocaleString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
   const formattedDay = today.toLocaleString("en-US", { weekday: "long" });
   const wish = today.getHours() < 11 ? "Good Morning" : "Good Evening";
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -20,11 +26,12 @@ const GreetingCard = () => {
         .select("*")
         .eq("email_address", user.email)
         .single();
+
       if (error) {
         console.error("Error fetching user info:", error);
       } else {
-        const firstName = data.name.split(" ");
-        setUserInfo({ name: firstName[0] });
+        const firstName = data.name?.split(" ")[0] || "";
+        setUserInfo({ name: firstName });
       }
     };
 

@@ -1,61 +1,51 @@
 import React, { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
 import Header from "../../components/RetailerHeader";
 import Footer from "../../components/RetailerFooter";
-import { Alert } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { name, size, batch, color, price, image, description, pid } = location.state || {};
 
-  // States to keep track of selected size, batch, and color
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
 
-  const handleSizeSelect = (size) => {
-    setSelectedSize(size);
-  };
+  const handleSizeSelect = (size) => setSelectedSize(size);
+  const handleBatchSelect = (batch) => setSelectedBatch(batch);
+  const handleColorSelect = (color) => setSelectedColor(color);
 
-  const handleBatchSelect = (batch) => {
-    setSelectedBatch(batch);
-  };
-
-  const handleColorSelect = (color) => {
-    setSelectedColor(color);
-  };
-
-  function AddItem(newItem) {
-    // Step 1: Get existing items from sessionStorage
-    let existing = sessionStorage.getItem('myItems');
-
-    // Step 2: Parse or initialize as an empty array
-    let items = existing ? JSON.parse(existing) : [];
-
-    // Step 3: Append new item
-    items.push(newItem);
-
-    // Step 4: Save updated array back to sessionStorage
-    sessionStorage.setItem('myItems', JSON.stringify(items));
-    alert("Item Added to cart")
-    
-    if (sessionStorage.get("customer_id")){
-      navigate('/payment');
-    }else{
-      Alert("Please login first")
+  const AddItem = (newItem) => {
+    const customerId = sessionStorage.getItem("customer_id");
+    if (!customerId) {
+      toast.error("Please login first!");
+      return;
     }
 
-  }
-  let profilephoto=sessionStorage.getItem("image");
+    let existing = sessionStorage.getItem("myItems");
+    let items = existing ? JSON.parse(existing) : [];
+    items.push(newItem);
+    sessionStorage.setItem("myItems", JSON.stringify(items));
+
+    toast.success("Product added to cart!");
+    setTimeout(() => navigate("/cartpage"), 2000); // navigate after showing toast
+  };
+
+  const profilephoto = sessionStorage.getItem("image");
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gradient-to-br from-[#EBDDFC] to-[#D0BDFB] text-[#2E2047]">
+      <ToastContainer />
+
       {/* Navbar */}
       {sessionStorage.getItem("customer_id") ? (
-      <Header profilePhoto={profilephoto} />
-      ) : (<Header />
+        <Header profilePhoto={profilephoto} />
+      ) : (
+        <Header />
       )}
 
       {/* Product Detail Card */}
@@ -132,7 +122,7 @@ const ProductDetail = () => {
                 if (selectedSize && selectedBatch && selectedColor) {
                   AddItem({ name, size: selectedSize, batch: selectedBatch, color: selectedColor, price, image, description, pid });
                 } else {
-                  alert("Please select a size, batch, and color.");
+                  toast.warning("Please select size, batch, and color.");
                 }
               }}
               className="flex items-center gap-2 bg-[#8D67CE] text-white text-[20px] font-medium px-6 py-3 rounded-xl hover:opacity-90"

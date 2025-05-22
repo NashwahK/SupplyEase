@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { FiFilter } from "react-icons/fi";
 import { supabase } from "../../supabaseClient";
@@ -50,8 +52,7 @@ const ProductCatalog = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [showFilter, setShowFilter] = useState(false);
-  const [priceRange, setPriceRange] = useState("all");
+  const [image, setImage] = useState(null); // Add state for image
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -75,31 +76,19 @@ const ProductCatalog = () => {
       filtered = filtered.filter((product) =>
         product.name.toLowerCase().includes(lowercasedQuery)
       );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products); // Show all products when search query is empty
     }
-
-    // Apply price filtering
-    if (priceRange === "low") {
-      filtered = filtered.filter((product) => product.unit_price <= 100);
-    } else if (priceRange === "mid") {
-      filtered = filtered.filter(
-        (product) => product.unit_price > 100 && product.unit_price <= 500
-      );
-    } else if (priceRange === "high") {
-      filtered = filtered.filter((product) => product.unit_price > 500);
-    }
-
-    setFilteredProducts(filtered);
-  }, [searchQuery, priceRange, products]);
-
-  let profilephoto = sessionStorage.getItem("image");
+  }, [searchQuery, products]);
+  let profilephoto=sessionStorage.getItem("image");
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gradient-to-br from-[#EBDDFC] to-[#D0BDFB]">
       {/* Navbar */}
       {sessionStorage.getItem("customer_id") ? (
-        <Header profilePhoto={profilephoto} />
-      ) : (
-        <Header />
+      <Header profilePhoto={profilephoto} />
+      ) : (<Header />
       )}
 
       {/* Search + Filter */}

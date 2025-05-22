@@ -34,7 +34,7 @@ const LoginCard = ({ toggleView }) => {
       .select("email_address")
       .eq("email_address", userEmail)
       .single();
-  
+
     if (profileError && profileError.code !== "PGRST116") {
       // PGRST116 = no rows found — that’s fine
       setError("Failed to fetch profile.");
@@ -45,7 +45,7 @@ const LoginCard = ({ toggleView }) => {
     if (existingProfile) {
       navigate("/dashboard");
     } else {
-      navigate("/profile-setup");
+      navigate("/");
     }
   };
   
