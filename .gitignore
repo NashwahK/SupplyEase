@@ -21,11 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
 .env
->>>>>>> master
-=======
-.env
->>>>>>> 37b1b21 (All committed)
+*.env
+backend/.env
+blockchain/.env
